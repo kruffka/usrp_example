@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <pthread.h>
 
 #define MAX_WRITE_THREAD_PACKAGE 20
 #define MAX_WRITE_THREAD_BUFFER_SIZE 8

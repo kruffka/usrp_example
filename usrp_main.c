@@ -1,5 +1,5 @@
-// #include "usrp_lib.h"
 #include "log.h"
+#include "usrp_lib.h"
 
 // void readFrame(PHY_VARS_NR_UE *UE, hw_timestamp *timestamp, bool toTrash)
 // {
@@ -257,15 +257,18 @@
 
 int main(void) {
 
-    log_init("/tmp/test.log", MAX_LOG_LEVEL);
-    LOG_I("first commit\n");
-    // UE->rfdevice.trx_stop_func(&UE->rfdevice);
+    hw_device rfdevice;
+    hw_config_t hw_config;
 
-    // if (device_init(&(UE->rfdevice), &UE->hw_config[0])) {
-    //     LOG_E(PHY, "Could not init the device\n");
-    //     ue_exit = 1;
-    //     return NULL;
-    // }
+    log_init("/tmp/test.log", MAX_LOG_LEVEL);
+    LOG_I("Version: %s\n", GIT_VERSION);
+
+
+    LOG_I("Init device\n");
+    if (device_init(&rfdevice, &hw_config)) {
+        LOG_E("Could not init the usrp device\n");
+        return -1;
+    }
 
     // if (ru_start(UE) == 0) {
     //     LOG_I(HW, "RU started\n");
@@ -274,6 +277,7 @@ int main(void) {
     //     ue_exit = 1;
     // }
 
+    // UE->rfdevice.trx_stop_func(&UE->rfdevice);
 
     log_deinit();
 

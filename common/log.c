@@ -2,13 +2,10 @@
 #include <stdbool.h>
 #include <time.h>
 #include <string.h>
+#include <stdarg.h>
 #include "log.h"
 
-#define YELLOW "\e[0;33m"
-#define RED "\e[0;31m"
-#define GREEN "\e[0;32m"
-#define BLUE "\e[0;34m"
-#define RESET "\e[0m"
+static char *color_array[MAX_LOG_LEVEL] = {RED, YELLOW, RESET, BLUE};
 
 typedef struct log_s {
     FILE *file;
@@ -43,7 +40,7 @@ void log_deinit(void) {
 }  
 
 // Моя простая функция для логирования в текущем потоке
-int my_log(log_type_e type, char *type_s, char *str) {
+int my_log(log_type_e type, char *type_s, char *fmt, ...) {
 
     if (type >= MAX_LOG_LEVEL) {
         return -1;
@@ -57,16 +54,21 @@ int my_log(log_type_e type, char *type_s, char *str) {
         return -1;
     }
 
+    char tmp[512];
+    va_list arg_ptr;
+    va_start(arg_ptr, fmt);
+    vsnprintf(tmp, sizeof(tmp), fmt, arg_ptr);
+    va_end(arg_ptr);
+
     time_t mytime = time(NULL);
     char * time_str = ctime(&mytime);
     time_str[strlen(time_str)-1] = '\0';
 
-    char *color_array[MAX_LOG_LEVEL] = {GREEN, YELLOW, RED, BLUE};
     char output[1024];
-    snprintf(output, sizeof(output), "[%s][%s][%d] %s%s"RESET, time_str, type_s, log_g.counter, color_array[type], str);
-    printf("%s", output);
+    snprintf(output, sizeof(output), "[%s][%s][%d] %s%s"RESET, time_str, type_s, log_g.counter, color_array[type], tmp);
+    fputs(output, stdout);
     if (log_g.file) {
-        fprintf(log_g.file, "%s", output);
+        fputs(output, log_g.file);
     }
     log_g.counter++;
 

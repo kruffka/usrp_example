@@ -1,22 +1,32 @@
 #ifndef _LOG_H_
 #define _LOG_H_
 
-// #define MY_LOG2(type, str) my_log(type, #type, str)
+#define YELLOW "\e[0;33m"
+#define RED "\e[0;31m"
+#define GREEN "\e[0;32m"
+#define BLUE "\e[0;34m"
+#define RESET "\e[0m"
 
-#define LOG_I(str) my_log(INFO, "INFO", str)
-#define LOG_D(str) my_log(DEBUG, "DEBUG", str)
-#define LOG_E(str) my_log(ERROR, "ERROR", str)
+#define _PRINT_LOG(type, fmt, ...)                              \
+    do {                                                        \
+        my_log(type, #type, fmt, ##__VA_ARGS__);                  \
+    } while(0)              
+
+#define LOG_I(str, ...) _PRINT_LOG(INFO, str, ##__VA_ARGS__)  
+#define LOG_D(str, ...) _PRINT_LOG(DEBUG, str, ##__VA_ARGS__)  
+#define LOG_E(str, ...) _PRINT_LOG(ERROR, str, ##__VA_ARGS__)  
+#define LOG_W(str, ...) _PRINT_LOG(WARNING, str, ##__VA_ARGS__)  
 
 typedef enum log_color {
-    INFO = 0, // зеленый
-    WARNING, // жёлтый
-    ERROR, // красный
-    DEBUG, // синий
+    ERROR = 0,  // красный
+    WARNING,    // жёлтый
+    INFO,       // без цвета
+    DEBUG,      // синий
     MAX_LOG_LEVEL
 } log_type_e;
 
 // Моя простая функция для логирования в текущем потоке
-int my_log(log_type_e type, char *type_s, char *str) ;
+int my_log(log_type_e type, char *type_s, char *fmt, ...);
 
 int log_init(char *filepath, log_type_e log_level);
 

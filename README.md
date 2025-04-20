@@ -53,7 +53,15 @@ sudo ./examples/usrp_tx_from_file --file_rx=/tmp/txdata0.pcm
 sudo ./examples/usrp_example -h
 ```
 
+Для примеров с RX функциями, кол-во слотов для чтения с USRP захардкожено в циклах в main, например для usrp_example:    
+```c
+    for (int i = 0; i < 50; i++) {
+        ru_in_out_step(&rfdevice, &proc);
+```
 
 ## Описание кода
 
-Как работает код, что он может и что в нем не очень [здесь](https://github.com/kruffka/usrp_example/blob/master/docs/README.md)
+Как работает код, что он может и что в нем не очень [здесь](https://github.com/kruffka/usrp_example/blob/master/docs/README.md)       
+
+Просто картинка с логами usrp_example на USRP N300:      
+![image](https://github.com/user-attachments/assets/309b6243-c537-4555-9546-28e11ce44c0c)

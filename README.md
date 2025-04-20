@@ -4,7 +4,7 @@
 
 ## Зависимости    
 
-Первый делом для работы с USRP понадобится UHD библиотека и все ее зависимости, поэтому если ее еще не установили, то идем сюда и собираем из исходников: [Инструкция по установке UHD](docs/UHD_install.md)         
+Первый делом для работы с USRP понадобится UHD библиотека и все ее зависимости, поэтому если ее еще не установили, то идем сюда и собираем из исходников: [Инструкция по установке UHD](https://github.com/kruffka/usrp_example/blob/master/docs/UHD_install.md)         
 
 ## Сборка
 
@@ -24,7 +24,15 @@ make
 
 Можно запускать без sudo, но можно потерять в производительности для больших sample rate и получить много Overflow (O) или UnderFlow (U) от USRP         
 ```bash
-sudo ./examples/usrp_example
+sudo ./examples/usrp_example --llevel=4
+```
+
+```bash
+sudo ./examples/usrp_rx_to_file --file_rx=/tmp/rxdata0.pcm
+```
+
+```bash
+sudo ./examples/usrp_tx_from_file --file_rx=/tmp/txdata0.pcm
 ```
 
 Каждый из исполняемых файлов имеет конфигурацию, все поля конфигурации можно вывести на экран так:      
@@ -35,4 +43,4 @@ sudo ./examples/usrp_example -h
 
 ## Описание кода
 
-Описание исходного кода можно найти здесь: [Как работает код?](ссылка)
+Как работает код, что он может и что в нем не очень [здесь](https://github.com/kruffka/usrp_example/blob/master/docs/README.md)

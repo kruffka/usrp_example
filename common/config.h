@@ -1,7 +1,7 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-#include "usrp_main.h"
+#include "examples/usrp_main.h"
 #include "usrp/usrp_lib.h"
 
 

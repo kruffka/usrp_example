@@ -22,9 +22,11 @@ message(STATUS "CMAKE_C_COMPILER: " ${CMAKE_C_COMPILER})
 message(STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER})
 message(STATUS "CMAKE_BUILD_TYPE is " ${CMAKE_BUILD_TYPE})
 
-set(USRP_LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/usrp)
-set(COMMON_LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/common)
-set(SIMDE_LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/simde)
+
+set(EXAMPLES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/examples)
+set(USRP_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/usrp)
+set(COMMON_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/common)
+set(SIMDE_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/simde)
 
 #
 # Compile flags
@@ -47,14 +49,16 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${commonOpts} -std=gnu11 -Wmissing-parameter
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${commonOpts} -std=c++11")
 
-
+# header files
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${USRP_LIB_SRC})
-include_directories(${COMMON_LIB_SRC})
-include_directories(${SIMDE_LIB_SRC})
+include_directories(${USRP_LIB_PATH})
+include_directories(${COMMON_LIB_PATH})
+include_directories(${SIMDE_LIB_PATH})
+include_directories(${EXAMPLES_PATH})
 
-add_subdirectory(${COMMON_LIB_SRC})
-add_subdirectory(${USRP_LIB_SRC})
+# Build libraries
+add_subdirectory(${COMMON_LIB_PATH})
+add_subdirectory(${USRP_LIB_PATH})
 
-add_executable(usrp_example usrp_main.c)
-target_link_libraries(usrp_example common usrplib pthread)
+# Examples
+add_subdirectory(${EXAMPLES_PATH})

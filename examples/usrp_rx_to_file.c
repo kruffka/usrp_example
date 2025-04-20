@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 #include "usrp_main.h"
-#include "config.h"
+#include "common/config.h"
 
 int usrp_tx_thread;
 int usrp_capture_thread;
@@ -33,7 +33,7 @@ static int ru_start(hw_device *rfdevice)
     return 0;
 }
 
-static bool rx_rf(hw_device *rfdevice, trx_proc_t *proc)
+static bool rx_rf(hw_device *rfdevice, trx_proc_t *proc, FILE *file)
 {
     void *rxp[proc->nb_antennas_rx];
 
@@ -56,66 +56,11 @@ static bool rx_rf(hw_device *rfdevice, trx_proc_t *proc)
 
     proc->rx_pos = (proc->rx_pos + 1) % NOF_BLOCKS_IN_BUF;
 
-#if 0 // для записи RX
-    FILE *file = fopen("/tmp/rxdata0.pcm", "a+");
+    // для записи RX
     fwrite(rxp[0], proc->readBlockSize * sizeof(int), 1, file);
-    fclose(file);
-#endif
 
     return true;
 }
-
-static bool tx_rf(hw_device *rfdevice, trx_proc_t *proc)
-{
-    void *txp[proc->nb_antennas_tx];
-    for (int i = 0; i < proc->nb_antennas_tx; i++) {
-        txp[i] = (void *)&proc->txdata[i][proc->tx_pos * proc->writeBlockSize];
-    }
-
-    // другие флаги необходимо использовать лишь тогда, когда нужно выкл/вкл tx
-    int flags = MiddleOfBurst;
-
-    proc->timestamp_tx = proc->timestamp_rx - rfdevice->hw_config->tx_sample_advance + CAPABILITY_SLOT_RX_TO_TX * proc->readBlockSize; 
-
-    // Отдельный поток под передачу на устройство, в этой функции лишь
-    // копируется и сигналится этот поток
-    if (usrp_tx_thread == 1) {
-        rfdevice->trx_write_func(rfdevice, proc->timestamp_tx, txp, proc->writeBlockSize, proc->nb_antennas_tx, flags);
-    } else {
-        // Обычный режим, когда передаем в том же потоке, что и принимаем
-        if (proc->writeBlockSize != rfdevice->trx_write_func(rfdevice, proc->timestamp_tx, txp, proc->writeBlockSize, proc->nb_antennas_tx, flags)) {
-            LOG_W("write block size != sent block size\n");
-            return false;
-        }
-    }
-
-    LOG_D("USRP tx: timestamp rx %ld, tx %ld, diff %ld, size %d, pos %d/%d\n", proc->timestamp_rx, proc->timestamp_tx, proc->timestamp_tx - proc->timestamp_rx, proc->writeBlockSize, proc->tx_pos, NOF_BLOCKS_IN_BUF);
-
-#if 0 // для записи TX
-    FILE *file = fopen("/tmp/txdata0.pcm", "a+");
-    fwrite(txp[0], proc->writeBlockSize * sizeof(int), 1, file);
-    fclose(file);
-#endif
-
-    proc->tx_pos = (proc->tx_pos + 1) % NOF_BLOCKS_IN_BUF;
-
-    return true;
-}
-
-bool ru_in_out_step(hw_device *rfdevice, trx_proc_t *proc)
-{
-    // Читаем с USRP
-    if (!rx_rf(rfdevice, proc)) {
-        return false;
-    }
-
-    // Пишем в USRP
-    if (!tx_rf(rfdevice, proc)) {
-        return false;
-    }
-    return true;
-}
-
 
 int main(int argc, char *argv[]) {
 
@@ -165,22 +110,21 @@ int main(int argc, char *argv[]) {
         LOG_E("Failed to start RU\n");
         goto exit;
     }
+    FILE *file= fopen("/tmp/rxdata0.pcm", "wb");
 
     for (int i = 0; i < 50; i++) {
-        ru_in_out_step(&rfdevice, &proc);
-
+        rx_rf(&rfdevice, &proc, file);
         // Обработка RX: где i - номер антенны, rx_pos - текущий номер слота, readBlockSize - размер слота
         // &proc->rxdata[i][(proc->rx_pos - 1) * proc->readBlockSize]
-
-        // и подготовка TX: где i - номер антенны, tx_pos - текущий номер слота, writeBlockSize - размер слота
-        // &proc->txdata[i][proc->tx_pos * proc->writeBlockSize]
     }
+    fclose(file);
 
     // Остановка HW
     rfdevice.trx_stop_func(&rfdevice);
 
 exit:
     log_deinit();
+    // hw_deinit();
     
     printf("bye\n");
 }

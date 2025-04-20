@@ -497,4 +497,6 @@ typedef struct {
     uint32_t option_flag;  // Option flag
 } samplesBlockHeader_t;
 
+int device_init(hw_device *device, hw_config_t *hw_config);
+
 #endif // COMMON_LIB_H

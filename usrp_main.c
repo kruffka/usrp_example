@@ -1,9 +1,16 @@
 #include <stdio.h>
 #include <errno.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
 #include <sys/mman.h>
 #include "log.h"
 #include "usrp_lib.h"
 #include "thread_create.h"
+
+int usrp_tx_thread;
+int usrp_capture_thread;
+int usrp_cap_by_timestamp;
 
 // void readFrame(PHY_VARS_NR_UE *UE, hw_timestamp *timestamp, bool toTrash)
 // {
@@ -257,12 +264,72 @@
 //     return true;
 // }
 
+double sample_rate = 10e6;
+clock_source_t clock_source = internal;
+clock_source_t time_source = internal;
+int rx_num_channels = 1;
+int tx_num_channels = 1;
+uint64_t dl_carrier = 3e9;
+uint64_t ul_carrier = 3e9;
+double rx_gain = 30;
+double tx_gain = 30;
+char usrp_args[] = "addr=192.168.20.2";
+int rx_channel = 0;
+int tx_channel = 0;
 
+int hw_init(hw_config_t *hw_config) {
+
+    hw_config->sample_rate = sample_rate;
+    hw_config->clock_source = clock_source;
+    hw_config->time_source = time_source;
+    hw_config->rx_num_channels = rx_num_channels;
+    hw_config->tx_num_channels = tx_num_channels;
+
+    LOG_D("Configuring sample_rate %f, tx/rx num_channels %d/%d\n",
+        hw_config->sample_rate,
+        hw_config->tx_num_channels,
+        hw_config->rx_num_channels);
+
+    for (int i = 0; i < 4; i++) {
+        if (i < hw_config->rx_num_channels) {
+            hw_config->rx_freq[i] = dl_carrier;
+        } else {
+            hw_config->rx_freq[i] = 0.0;
+        }
+    
+        if (i < hw_config->tx_num_channels) {
+            hw_config->tx_freq[i] = ul_carrier;
+        } else {
+            hw_config->tx_freq[i] = 0.0;
+        }
+
+        hw_config->rx_gain[i] = rx_gain;
+        hw_config->tx_gain[i] = tx_gain;
+    }
+    // Канал в UHD для USRP N300 задаётся в формате "A:0" или "A:1"
+    // Номер Rx канала 0 или 1 преобразуется в строку "A:0" или "A:1"
+    char rx_channel_str[3];
+    snprintf(rx_channel_str, sizeof(rx_channel_str), "%d", rx_channel);
+    char rx_subdev_str[5] = "A:";
+    strcat(rx_subdev_str, rx_channel_str);
+    hw_config->rx_subdev = malloc(strlen(rx_subdev_str) + 1);
+    strcpy(hw_config->rx_subdev, rx_subdev_str);
+    // Номер Tx канала 0 или 1 преобразуется в строку "A:0" или "A:1"
+    char tx_channel_str[3];
+    snprintf(tx_channel_str, sizeof(tx_channel_str), "%d", tx_channel);
+    char tx_subdev_str[5] = "A:";
+    strcat(tx_subdev_str, tx_channel_str);
+    hw_config->tx_subdev = malloc(strlen(tx_subdev_str) + 1);
+    strcpy(hw_config->tx_subdev, tx_subdev_str);
+    hw_config->sdr_addrs = (char *)&(usrp_args);
+
+    return 0;
+}
 
 int main(void) {
 
-    hw_device rfdevice;
-    hw_config_t hw_config;
+    hw_device rfdevice = {0};
+    hw_config_t hw_config = {0};
 
     set_latency_target();
     if (getuid() == 0) {
@@ -272,9 +339,17 @@ int main(void) {
         }
     }
 
-    log_init("/tmp/test.log", MAX_LOG_LEVEL);
+    if (log_init("/tmp/test", MAX_LOG_LEVEL) < 0) {
+        fprintf(stderr, "error init logs\n");
+        return -1;
+    }
+
     LOG_I("Version: %s\n", GIT_VERSION);
 
+    if (hw_init(&hw_config) < 0) {
+        LOG_E("HW init error\n");
+        return -1;
+    }
 
     LOG_I("Init device\n");
     if (device_init(&rfdevice, &hw_config)) {
@@ -291,6 +366,8 @@ int main(void) {
 
     // UE->rfdevice.trx_stop_func(&UE->rfdevice);
 
-    log_deinit();
 
+    log_deinit();
+    
+    printf("bye\n");
 }

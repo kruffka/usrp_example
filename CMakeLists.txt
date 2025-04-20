@@ -57,4 +57,4 @@ add_subdirectory(${COMMON_LIB_SRC})
 add_subdirectory(${USRP_LIB_SRC})
 
 add_executable(usrp_example usrp_main.c)
-target_link_libraries(usrp_example usrplib pthread common)
+target_link_libraries(usrp_example common usrplib pthread)

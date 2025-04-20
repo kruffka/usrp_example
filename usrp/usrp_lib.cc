@@ -21,28 +21,15 @@
 #include <uhd/version.hpp>
 #include <unistd.h>
 
-#include "usrp_lib.h"
-#include "assertions.h"
-#include "log.h"
-#include "thread_create.h"
+extern "C" {
+    #include "usrp_lib.h"
+    #include "assertions.h"
+    #include "log.h"
+    #include "thread_create.h"
+}
 
 #include <simde/x86/avx2.h>
 #include <simde/x86/fma.h>
-#if defined(__x86_64) || defined(__i386__)
-
-/* x86 processors */
-
-#if defined(__AVX512BW__) || defined(__AVX512F__)
-#include <immintrin.h>
-#endif
-#elif defined(__arm__) || defined(__aarch64__)
-
-/* ARM processors */
-// note this fails on some x86 machines, with an error like:
-// /usr/lib/gcc/x86_64-redhat-linux/8/include/gfniintrin.h:57:1: error: inlining failed in call to always_inline ‘_mm_gf2p8affine_epi64_epi8’: target specific option mismatch
-#include <simde/x86/clmul.h>
-
-#endif // x86_64 || i386
 
 
 /** @addtogroup _USRP_PHY_RF_INTERFACE_
@@ -475,16 +462,8 @@ static int trx_usrp_write(hw_device *device,
     }
 
     if (usrp_tx_thread == 0) {
-#if defined(__x86_64) || defined(__i386__)
         nsamps2 = (nsamps + 7) >> 3;
         simde__m256i buff_tx[cc < 2 ? 2 : cc][nsamps2];
-#elif defined(__arm__) || defined(__aarch64__)
-        nsamps2 = (nsamps + 3) >> 2;
-        int16x8_t buff_tx[cc < 2 ? 2 : cc][nsamps2];
-#else
-#error Unsupported CPU architecture, USRP device cannot be built
-#endif
-
         // bring RX data into 12 LSBs for softmodem RX
         for (int i = 0; i < cc; i++) {
             for (int j = 0; j < nsamps2; j++) {
@@ -779,9 +758,9 @@ void *trx_usrp_capture_thread(void *arg)
 
         if (usrp_cap_by_timestamp == 1) {
             if (cap_choice == 0) {
-                sprintf(filename, "/tmp/rx/usrp_rx%lld.pcm", timestamp);
+                snprintf(filename, sizeof(filename), "/tmp/rx/usrp_rx%ld.pcm", timestamp);
             } else {
-                sprintf(filename, "/tmp/tx/usrp_tx%lld.pcm", timestamp);
+                snprintf(filename, sizeof(filename), "/tmp/tx/usrp_tx%ld.pcm", timestamp);
             }
             file = fopen(capture_thread->iq_record_path, "w");
             fwrite(buff[0], nsamps*sizeof(int), 1, file);
@@ -804,7 +783,6 @@ int *capture_iq_buf;
 int trx_usrp_capture_init(hw_device *device)
 {
     // uhd::set_thread_priority_safe(1.0);
-    int affinity_trx_write_thread = -1;
     for (int rxtx = 0; rxtx < 2; rxtx++) {
         if (((usrp_capture_thread >> rxtx) & 1) == 0) {
             continue;
@@ -875,13 +853,9 @@ static int trx_usrp_read(hw_device *device,
     usrp_state_t *s = (usrp_state_t *)device->priv;
     int samples_received = 0;
     int nsamps2; // aligned to upper 32 or 16 byte boundary
-#if defined(__x86_64) || defined(__i386__)
     nsamps2 = (nsamps + 7) >> 3;
-    __m256i buff_tmp[cc < 2 ? 2 : cc][nsamps2];
-#elif defined(__arm__) || defined(__aarch64__)
-    nsamps2 = (nsamps + 3) >> 2;
-    int16x8_t buff_tmp[cc < 2 ? 2 : cc][nsamps2];
-#endif
+    simde__m256i buff_tmp[cc < 2 ? 2 : cc][nsamps2];
+
 
     int rxshift;
     switch (device->type) {

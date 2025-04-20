@@ -11,6 +11,5 @@ if(NOT UHD_FOUND)
 endif()
 
 add_library(usrplib STATIC usrp_lib.cc)
-
-target_link_libraries(usrplib PRIVATE ${UHD_LIBRARIES} -lboost_log -lboost_thread -lpthread common)
+target_link_libraries(usrplib PRIVATE common ${UHD_LIBRARIES} -lboost_log -lboost_thread -lpthread)
 target_include_directories(usrplib PRIVATE ${UHD_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})

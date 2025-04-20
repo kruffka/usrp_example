@@ -16,7 +16,8 @@
   echo performance | sudo tee /sys/devices/system/cpu/cpufreq/policy*/scaling_governor
   cpufreq-info
 ```
-- Включить изоляцию ядер для нашего софта в GRUB (Например: GRUB_CMDLINE_LINUX_DEFAULT="isolcpus=16-31 intel_pstate=disable processor.max_cstate=1 intel_idle.max_cstate=0 idle=poll iommu=pt intel_iommu=on hugepages=2048 nohz_full=16-31 rcu_nocbs=16-31")
+- Включить изоляцию ядер для нашего софта в GRUB     
+(Например: GRUB_CMDLINE_LINUX_DEFAULT="isolcpus=16-31 intel_pstate=disable processor.max_cstate=1 intel_idle.max_cstate=0 idle=poll iommu=pt intel_iommu=on hugepages=2048 nohz_full=16-31 rcu_nocbs=16-31")
 
 ## Сборка
 

@@ -26,7 +26,7 @@ typedef enum log_color {
 } log_type_e;
 
 // Моя простая функция для логирования в текущем потоке
-int my_log(log_type_e type, char *type_s, char *fmt, ...);
+int my_log(const log_type_e type, const char *type_s, const char *fmt, ...);
 
 int log_init(char *filepath, log_type_e log_level);
 

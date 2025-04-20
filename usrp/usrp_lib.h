@@ -400,12 +400,12 @@ struct hw_device_t {
                          int nsamps,
                          int num_antennas);
 
-    int (*trx_get_stats_func)();
+    int (*trx_get_stats_func)(hw_device *);
 
   /*! \brief Reset device statistics
      * \returns 0 in success
      */
-    int (*trx_reset_stats_func)();
+    int (*trx_reset_stats_func)(hw_device *);
 
   /*! \brief Terminate operation of the transceiver -- free all associated
      * resources \param device the hardware to use
@@ -414,7 +414,7 @@ struct hw_device_t {
 
   /*! \brief Stop operation of the transceiver
      */
-    void (*trx_stop_func)(hw_device *device);
+    void (*trx_stop_func)(hw_device *);
 
   /* Functions API related to UE*/
 

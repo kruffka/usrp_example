@@ -1,5 +1,9 @@
+#include <stdio.h>
+#include <errno.h>
+#include <sys/mman.h>
 #include "log.h"
 #include "usrp_lib.h"
+#include "thread_create.h"
 
 // void readFrame(PHY_VARS_NR_UE *UE, hw_timestamp *timestamp, bool toTrash)
 // {
@@ -259,6 +263,14 @@ int main(void) {
 
     hw_device rfdevice;
     hw_config_t hw_config;
+
+    set_latency_target();
+    if (getuid() == 0) {
+        set_priority(PRIORITY_RT_MAX);
+        if (mlockall(MCL_CURRENT | MCL_FUTURE) == -1) {
+            fprintf(stderr, "mlockall: %s\n", strerror(errno));
+        }
+    }
 
     log_init("/tmp/test.log", MAX_LOG_LEVEL);
     LOG_I("Version: %s\n", GIT_VERSION);

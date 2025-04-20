@@ -32,5 +32,4 @@ endif()
 
 
 set(GIT_VERSION "\"Branch: ${GIT_BRANCH} Abrev. Hash: ${GIT_COMMIT_HASH} Date: ${GIT_COMMIT_DATE}\"")
-message(STATUS "Version is ${GIT_VERSION}")
 add_definitions("-DGIT_VERSION=${GIT_VERSION}")

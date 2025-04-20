@@ -1404,60 +1404,60 @@ extern "C" {
                     // from usrp_time_offset
                     // hw_config[0].samples_per_packet    = 2048;
                     hw_config[0].tx_sample_advance = 15; // to be checked
-                    hw_config[0].tx_bw = 80e6;
-                    hw_config[0].rx_bw = 80e6;
+                    hw_config[0].tx_bw = 100e6; // 80e6;
+                    hw_config[0].rx_bw = 100e6; // 80e6;
                     break;
 
                 case 92160000:
                     // from usrp_time_offset
                     // hw_config[0].samples_per_packet    = 2048;
                     hw_config[0].tx_sample_advance = 15; // to be checked
-                    hw_config[0].tx_bw = 80e6;
-                    hw_config[0].rx_bw = 80e6;
+                    hw_config[0].tx_bw = 100e6; // 80e6;
+                    hw_config[0].rx_bw = 100e6; // 80e6;
                     break;
 
                 case 61440000:
                     // from usrp_time_offset
                     // hw_config[0].samples_per_packet    = 2048;
                     hw_config[0].tx_sample_advance = 15;
-                    hw_config[0].tx_bw = 40e6;
-                    hw_config[0].rx_bw = 40e6;
+                    hw_config[0].tx_bw = 100e6; // 40e6;
+                    hw_config[0].rx_bw = 100e6; // 40e6;
                     break;
 
                 case 46080000:
                     // hw_config[0].samples_per_packet    = 2048;
                     hw_config[0].tx_sample_advance = 15;
-                    hw_config[0].tx_bw = 40e6;
-                    hw_config[0].rx_bw = 40e6;
+                    hw_config[0].tx_bw = 100e6; // 40e6;
+                    hw_config[0].rx_bw = 100e6; // 40e6;
                     break;
 
                 case 30720000:
                     // from usrp_time_offset
                     // hw_config[0].samples_per_packet    = 2048;
                     hw_config[0].tx_sample_advance = 15;
-                    hw_config[0].tx_bw = 20e6;
-                    hw_config[0].rx_bw = 20e6;
+                    hw_config[0].tx_bw = 100e6; // 20e6;
+                    hw_config[0].rx_bw = 100e6; // 20e6;
                     break;
 
                 case 15360000:
                     // hw_config[0].samples_per_packet    = 2048;
                     hw_config[0].tx_sample_advance = 45;
-                    hw_config[0].tx_bw = 10e6;
-                    hw_config[0].rx_bw = 10e6;
+                    hw_config[0].tx_bw = 100e6; // 10e6;
+                    hw_config[0].rx_bw = 100e6; // 10e6;
                     break;
 
                 case 7680000:
                     // hw_config[0].samples_per_packet    = 2048;
                     hw_config[0].tx_sample_advance = 50;
-                    hw_config[0].tx_bw = 5e6;
-                    hw_config[0].rx_bw = 5e6;
+                    hw_config[0].tx_bw = 100e6; // 5e6;
+                    hw_config[0].rx_bw = 100e6; // 5e6;
                     break;
 
                 case 1920000:
                     // hw_config[0].samples_per_packet    = 2048;
                     hw_config[0].tx_sample_advance = 50;
-                    hw_config[0].tx_bw = 1.25e6;
-                    hw_config[0].rx_bw = 1.25e6;
+                    hw_config[0].tx_bw = 100e6; // 1.25e6;
+                    hw_config[0].rx_bw = 100e6; // 1.25e6;
                     break;
 
                 default:
@@ -1487,48 +1487,48 @@ extern "C" {
                     s->usrp->set_master_clock_rate(46.08e6);
                     // hw_config[0].samples_per_packet    = 1024;
                     hw_config[0].tx_sample_advance = 115;
-                    hw_config[0].tx_bw = 40e6;
-                    hw_config[0].rx_bw = 40e6;
+                    hw_config[0].tx_bw = 100e6; // 40e6;
+                    hw_config[0].rx_bw = 100e6; // 40e6;
                     break;
 
                 case 30720000:
                     s->usrp->set_master_clock_rate(30.72e6);
                     // hw_config[0].samples_per_packet    = 1024;
                     hw_config[0].tx_sample_advance = 115;
-                    hw_config[0].tx_bw = 20e6;
-                    hw_config[0].rx_bw = 20e6;
+                    hw_config[0].tx_bw = 100e6; // 20e6;
+                    hw_config[0].rx_bw = 100e6; // 20e6;
                     break;
 
                 case 23040000:
                     s->usrp->set_master_clock_rate(23.04e6); // to be checked
                     // hw_config[0].samples_per_packet    = 1024;
                     hw_config[0].tx_sample_advance = 113;
-                    hw_config[0].tx_bw = 20e6;
-                    hw_config[0].rx_bw = 20e6;
+                    hw_config[0].tx_bw = 100e6; // 20e6;
+                    hw_config[0].rx_bw = 100e6; // 20e6;
                     break;
 
                 case 15360000:
                     s->usrp->set_master_clock_rate(30.72e06);
                     // hw_config[0].samples_per_packet    = 1024;
                     hw_config[0].tx_sample_advance = 103;
-                    hw_config[0].tx_bw = 20e6;
-                    hw_config[0].rx_bw = 20e6;
+                    hw_config[0].tx_bw = 100e6; // 20e6;
+                    hw_config[0].rx_bw = 100e6; // 20e6;
                     break;
 
                 case 7680000:
                     s->usrp->set_master_clock_rate(30.72e6);
                     // hw_config[0].samples_per_packet    = 1024;
                     hw_config[0].tx_sample_advance = 80;
-                    hw_config[0].tx_bw = 20e6;
-                    hw_config[0].rx_bw = 20e6;
+                    hw_config[0].tx_bw = 100e6; // 20e6;
+                    hw_config[0].rx_bw = 100e6; // 20e6;
                     break;
 
                 case 1920000:
                     s->usrp->set_master_clock_rate(30.72e6);
                     // hw_config[0].samples_per_packet    = 1024;
                     hw_config[0].tx_sample_advance = 40;
-                    hw_config[0].tx_bw = 20e6;
-                    hw_config[0].rx_bw = 20e6;
+                    hw_config[0].tx_bw = 100e6; // 20e6;
+                    hw_config[0].rx_bw = 100e6; // 20e6;
                     break;
 
                 default:

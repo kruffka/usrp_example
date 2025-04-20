@@ -65,7 +65,7 @@ int my_log(const log_type_e type, const char *type_s, const char *fmt, ...) {
     time_str[strlen(time_str)-1] = '\0';
 
     char output[1024];
-    snprintf(output, sizeof(output), "[%s][%s][%d] %s%s"RESET, time_str, type_s, log_g.counter, color_array[type], tmp);
+    snprintf(output, sizeof(output), "[%s][%-5s][%08d] %s%s"RESET, time_str, type_s, log_g.counter, color_array[type], tmp);
     fputs(output, stdout);
     if (log_g.file) {
         fputs(output, log_g.file);

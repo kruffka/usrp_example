@@ -15,11 +15,11 @@
 #define LOG_I(str, ...) _PRINT_LOG(INFO, str, ##__VA_ARGS__)  
 #define LOG_D(str, ...) _PRINT_LOG(DEBUG, str, ##__VA_ARGS__)  
 #define LOG_E(str, ...) _PRINT_LOG(ERROR, str, ##__VA_ARGS__)  
-#define LOG_W(str, ...) _PRINT_LOG(WARNING, str, ##__VA_ARGS__)  
+#define LOG_W(str, ...) _PRINT_LOG(WARN, str, ##__VA_ARGS__)  
 
 typedef enum log_color {
     ERROR = 0,  // красный
-    WARNING,    // жёлтый
+    WARN,    // жёлтый
     INFO,       // без цвета
     DEBUG,      // синий
     MAX_LOG_LEVEL

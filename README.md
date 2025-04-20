@@ -6,6 +6,18 @@
 
 Первый делом для работы с USRP понадобится UHD библиотека и все ее зависимости, поэтому если ее еще не установили, то идем сюда и собираем из исходников: [Инструкция по установке UHD](https://github.com/kruffka/usrp_example/blob/master/docs/UHD_install.md)         
 
+## Опционально
+Для больших sample rate, софт для работы с usrp может не успевать и будут возникать OOO или UUU (Overflow, Underrun и прочие). Чтобы сократить (или вовсе их убрать) следует выполнить следующие шаги:
+- Выставить одинаковое MTU на USRP и на хосте, например на 9000
+- Поставить RT ядро (см. в гугле), при вводе uname -a, должно выводить -rt в версии ядра
+- Выставить максимальную частоту в CPU для всех ядер **(в текущих примерах это делается если запустить под sudo)**
+- Governor
+```bash
+  echo performance | sudo tee /sys/devices/system/cpu/cpufreq/policy*/scaling_governor
+  cpufreq-info
+```
+- Включить изоляцию ядер для нашего софта в GRUB (Например: GRUB_CMDLINE_LINUX_DEFAULT="isolcpus=16-31 intel_pstate=disable processor.max_cstate=1 intel_idle.max_cstate=0 idle=poll iommu=pt intel_iommu=on hugepages=2048 nohz_full=16-31 rcu_nocbs=16-31")
+
 ## Сборка
 
 Сборка примеров с USRP:   

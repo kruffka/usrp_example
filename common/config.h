@@ -23,6 +23,9 @@ typedef struct config {
     // debug
     log_type_e llevel;
     char *lpath;
+
+    char *file_tx;
+    char *file_rx;
     
 } config_t;
 

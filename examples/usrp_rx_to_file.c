@@ -78,6 +78,12 @@ int main(int argc, char *argv[]) {
     // Мини парсер полезных опций
     config_t cfg = {};
     parse_config(argc, argv, &cfg);
+    printf("  File RX: %s\n", cfg.file_rx);
+    FILE *file= fopen(cfg.file_rx, "wb");
+    if (file == NULL) {
+        printf("File path is NULL: use --file_rx <path> option\n");
+        goto exit;
+    }
 
     // Инициализация логов
     if (log_init(cfg.lpath, cfg.llevel) < 0) {
@@ -110,7 +116,7 @@ int main(int argc, char *argv[]) {
         LOG_E("Failed to start RU\n");
         goto exit;
     }
-    FILE *file= fopen("/tmp/rxdata0.pcm", "wb");
+
 
     for (int i = 0; i < 50; i++) {
         rx_rf(&rfdevice, &proc, file);

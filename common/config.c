@@ -64,6 +64,8 @@ static struct option long_options[] = {
     {"usrp_tx_thread", required_argument, 0, 'U'},
     {"llevel", required_argument, 0, 'L'},
     {"lpath", required_argument, 0, 'l'},
+    {"file_rx", required_argument, 0, 'F'},
+    {"file_tx", required_argument, 0, 'f'},
     {"help", no_argument, 0, 'h'},
     {0, 0, 0, 0}
 };
@@ -95,6 +97,8 @@ int parse_config(int argc, char *argv[], config_t *config) {
     config->usrp_tx_thread = 0;
     config->llevel = INFO;
     config->lpath = NULL;
+    config->file_tx = NULL;
+    config->file_rx = NULL;
 
     int opt;
     while ((opt = getopt_long(argc, argv, "r:c:t:R:T:d:u:g:G:a:x:y:h", long_options, NULL)) != -1) {
@@ -144,6 +148,12 @@ int parse_config(int argc, char *argv[], config_t *config) {
                 break;
             case 'L':
                 config->llevel = atoi(optarg);
+                break;
+            case 'F':
+                config->file_rx = optarg;
+                break;
+            case 'f':
+                config->file_tx = optarg;
                 break;
             case 'h':
                 print_usage(argv[0]);

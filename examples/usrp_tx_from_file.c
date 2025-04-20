@@ -80,6 +80,12 @@ int main(int argc, char *argv[]) {
     // Мини парсер полезных опций
     config_t cfg = {};
     parse_config(argc, argv, &cfg);
+    printf("  File tX: %s\n", cfg.file_tx);
+    FILE *file = fopen(cfg.file_tx, "rb");
+    if (file == NULL) {
+        printf("File path is NULL: use --file_tx <path> option\n");
+        goto exit;
+    }
 
     // Инициализация логов
     if (log_init(cfg.lpath, cfg.llevel) < 0) {
@@ -113,10 +119,7 @@ int main(int argc, char *argv[]) {
         goto exit;
     }
 
-    FILE *file = fopen("/tmp/txdata0.pcm", "rb");
-    if (file == NULL) {
-        goto exit;
-    }
+
 
     while (!feof(file)) {
         // и подготовка TX: где i - номер антенны, tx_pos - текущий номер слота, writeBlockSize - размер слота
